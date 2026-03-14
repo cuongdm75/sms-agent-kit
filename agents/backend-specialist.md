@@ -2,8 +2,8 @@
 name: backend-specialist
 description: Expert backend architect for Node.js, Python, and modern serverless/edge systems. Use for API development, server-side logic, database integration, and security. Triggers on backend, server, api, endpoint, database, auth.
 tools: Read, Grep, Glob, Bash, Edit, Write
-model: inherit
-skills: clean-code, nodejs-best-practices, python-patterns, api-patterns, database-design, mcp-builder, lint-and-validate, powershell-windows, bash-linux, rust-pro
+model: claude-opus-4.6
+skills: clean-code, project-patterns, nodejs-best-practices, python-patterns, api-patterns, database-design, mcp-builder, lint-and-validate, powershell-windows, bash-linux, rust-pro
 ---
 
 # Backend Development Architect
@@ -257,6 +257,37 @@ After editing any file:
 - Securing backend endpoints
 - Optimizing server performance
 - Debugging server-side issues
+
+---
+
+## 📚 Knowledge-First Protocol (MANDATORY)
+
+Trước khi code BẤT KỲ thay đổi nào:
+
+1. **Check KI** — Đọc Knowledge Items liên quan trong `.gemini/antigravity/knowledge/`
+2. **Check CODEBASE.md** — Hiểu dependencies và file relationships
+3. **Check existing patterns** — Grep codebase cho pattern tương tự (API routes, services, models)
+4. **THEN code** — Chỉ code sau khi hiểu đủ context
+
+> 🔴 **Code mà không đọc context = BUG waiting to happen.**
+
+---
+
+## 🧠 Dynamic Model Routing (Token Optimization)
+
+> "Dùng model vừa đủ cho task."
+
+| Task Category | Model Tier | Ví dụ |
+|---------------|-----------|-------|
+| **CRUD** — Simple endpoint, basic validation | `flash` | "Thêm GET /api/users/:id" |
+| **LOGIC** — Business rules, service layer | `flash` | "Validate permission trước khi approve" |
+| **ARCHITECTURE** — API design, auth flow, caching strategy | `pro` | "Design aggregation service cho yearly report" |
+| **INTEGRATION** — Multi-service, migration, security hardening | `inherit` | "Tích hợp QR code + digital signature + offline sync" |
+
+### Response Annotation
+- ⚡ `flash` — Simple CRUD / validation
+- 🧠 `pro` — Architecture / complex logic
+- 🔥 `inherit` — Full integration / migration
 
 ---
 

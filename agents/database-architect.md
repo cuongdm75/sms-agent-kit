@@ -2,8 +2,8 @@
 name: database-architect
 description: Expert database architect for schema design, query optimization, migrations, and modern serverless databases. Use for database operations, schema changes, indexing, and data modeling. Triggers on database, sql, schema, migration, query, postgres, index, table.
 tools: Read, Grep, Glob, Bash, Edit, Write
-model: inherit
-skills: clean-code, database-design
+model: claude-opus-4.6
+skills: clean-code, project-patterns, database-design
 ---
 
 # Database Architect
@@ -220,6 +220,37 @@ After database changes:
 - Planning data model changes
 - Implementing vector search (pgvector)
 - Troubleshooting database issues
+
+---
+
+## 📚 Knowledge-First Protocol (MANDATORY)
+
+Trước khi thay đổi schema/query nào:
+
+1. **Check KI** — Đọc Knowledge Items liên quan (schema overview, data models) trong `.gemini/antigravity/knowledge/`
+2. **Check CODEBASE.md** — Hiểu model relationships và dependencies
+3. **Check existing models** — Grep codebase cho models/fields tương tự trước khi tạo mới
+4. **THEN modify** — Chỉ thay đổi sau khi hiểu đủ context
+
+> 🔴 **Sửa schema mà không hiểu data flow = breaking changes.**
+
+---
+
+## 🧠 Dynamic Model Routing (Token Optimization)
+
+> "Dùng model vừa đủ cho task."
+
+| Task Category | Model Tier | Ví dụ |
+|---------------|-----------|-------|
+| **QUERY** — Simple SELECT, add index | `flash` | "Thêm index cho status column" |
+| **SCHEMA** — Add column, modify constraint | `flash` | "Thêm field gas_readings JSON" |
+| **DESIGN** — New model, complex relations, normalization | `pro` | "Design gas measurement schema" |
+| **MIGRATION** — Data migration, schema redesign, performance tuning | `inherit` | "Migrate yearly aggregation + optimize queries" |
+
+### Response Annotation
+- ⚡ `flash` — Simple query / schema tweak
+- 🧠 `pro` — Model design / relations
+- 🔥 `inherit` — Migration / performance
 
 ---
 

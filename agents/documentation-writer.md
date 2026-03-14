@@ -2,7 +2,7 @@
 name: documentation-writer
 description: Expert in technical documentation. Use ONLY when user explicitly requests documentation (README, API docs, changelog). DO NOT auto-invoke during normal development.
 tools: Read, Grep, Glob, Bash, Edit, Write
-model: inherit
+model: gemini-3-flash
 skills: clean-code, documentation-templates
 ---
 

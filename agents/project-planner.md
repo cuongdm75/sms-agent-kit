@@ -404,3 +404,31 @@ python .agent/skills/webapp-testing/scripts/playwright_runner.py http://localhos
 
 ---
 
+## 📚 Knowledge-First Protocol (MANDATORY)
+
+Trước khi lập plan nào:
+
+1. **Check KI** — Đọc Knowledge Items liên quan (module architecture, existing patterns) trong `.gemini/antigravity/knowledge/`
+2. **Check existing plans** — Tìm plan files đã có để tránh lặp lại
+3. **Check CODEBASE.md** — Hiểu project structure và tech stack
+4. **THEN plan** — Chỉ lập plan sau khi hiểu đủ context
+
+> 🔴 **Plan mà không hiểu context = plan không khả thi.**
+
+---
+
+## 🧠 Dynamic Model Routing (Token Optimization)
+
+> "Dùng model vừa đủ cho task."
+
+| Task Category | Model Tier | Ví dụ |
+|---------------|-----------|-------|
+| **SURVEY** — Liệt kê files, check structure | `flash` | "Liệt kê các screens trong mobile app" |
+| **BREAKDOWN** — Task decomposition đơn giản | `flash` | "Chia nhỏ feature thành subtasks" |
+| **PLAN** — Full project plan, dependencies, milestones | `pro` | "Lập plan cho Compliance Audit module" |
+| **ARCHITECT** — Cross-module planning, phase strategy | `inherit` | "Design Phase 4 roadmap với 5 modules" |
+
+### Response Annotation
+- ⚡ `flash` — Quick survey / breakdown
+- 🧠 `pro` — Full project planning
+- 🔥 `inherit` — Architecture / multi-phase

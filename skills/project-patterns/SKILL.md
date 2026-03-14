@@ -1,177 +1,100 @@
 ---
 name: project-patterns
-description: Lessons learned and proven patterns from SMS Online Platform development. Apply these rules when building enterprise safety management systems.
+description: PA SMS Online project-specific code patterns. Real code templates for Backend (FastAPI + Prisma), Frontend (Next.js), and Mobile (React Native). Use when creating new modules, endpoints, pages, or screens to follow established conventions.
 ---
 
-# Project Patterns — SMS Online Platform Experience
+# Project Patterns — PA SMS Online
 
-> Distilled from 8 Knowledge Items, 64+ development sessions, and real production deployment.
+> **Purpose:** Give agents concrete, real code references to prevent hallucinated imports, wrong patterns, and inconsistent code.
 
-## 1. Vietnamese i18n — ALWAYS Bilingual
+## 🏗️ Architecture Overview
 
-**Rule**: Never hardcode UI strings. Always use the `useLanguage()` hook.
-
-```tsx
-const { t, lang } = useLanguage();
-// ✅ CORRECT
-<span>{t('status', 'Trạng thái')}</span>
-
-// ❌ WRONG
-<span>Status</span>
+```
+src/
+├── server/                    # Backend — Python FastAPI
+│   ├── main.py               # App entry, CORS, middleware
+│   └── app/
+│       ├── api/v1/endpoints/  # Route files (one per module)
+│       ├── schemas/           # Pydantic request/response models
+│       ├── services/          # Business logic
+│       ├── core/              # Config, security, database, RBAC
+│       └── utils/             # Helpers
+├── web/                       # Frontend — Next.js 14 (App Router)
+│   ├── app/                   # Pages (one folder per module)
+│   ├── components/            # Shared components
+│   ├── lib/                   # api-client, utils
+│   └── contexts/              # AuthContext, LanguageContext
+└── mobile/                    # Mobile — React Native (Expo)
+    └── src/
+        ├── screens/           # Screen components
+        ├── hooks/             # useApi, custom hooks
+        ├── context/           # Auth, Settings, Network, Language
+        └── services/          # auth, offlineQueue
 ```
 
-**Common traps**:
-- Select dropdowns options — MUST translate both labels AND values display
-- Toast messages — both success and error messages
-- Table column headers — often forgotten
-- Placeholder text in inputs
-- Date format: Vietnamese uses `dd/MM/yyyy`, not `MM/dd/yyyy`
+## 📋 Pattern References
 
-## 2. Approval Workflow State Machine
+Read these files BEFORE writing code:
 
-**Pattern**: All safety modules follow 3-stage or 4-stage workflows.
+| Layer | File | What it shows |
+|-------|------|---------------|
+| **Backend API** | `references/api-endpoint.py` | FastAPI router with auth deps, Prisma DB, error handling |
+| **Backend Schema** | `references/pydantic-schema.py` | Pydantic models with camelCase aliases (`Field(alias=...)`) |
+| **Frontend Page** | `references/nextjs-page.tsx` | Next.js page with fetchClient, tabs, badges, i18n |
+| **Mobile Screen** | `references/mobile-screen.tsx` | React Native screen with useApi, RefreshControl, StyleSheet |
 
-### 3-Stage (MOC, Periodic Reports)
-```
-draft → pending_review → approved/rejected
-```
+## 🔴 Critical Rules
 
-### 4-Stage (Safety Walk, ePTW)
-```
-draft → pending_approval → conducting → archived
-```
+### Backend
+1. **ALWAYS** use `Depends(get_current_active_user)` for auth — defined in `app/api/deps.py`
+2. **ALWAYS** use `db.modelname.find_many()` / `db.modelname.create()` — Prisma client at `app/core/database.py`
+3. **Pydantic schemas** must use `Field(alias="camelCase")` + `populate_by_name = True`
+4. **NEVER** use `traceback.print_exc()` — use `logger.exception()` instead
+5. **ALWAYS** register new routes in `app/api/v1/api.py`
 
-### Key Rules
-- `pending_review → supplement_required` — Return for more info (needs `reviewNote`)
-- `supplement_required → pending_review` — Resubmit after fix
-- Always check **RBAC** before showing approve/reject buttons
-- Transitions trigger **notifications** via `notify.py`
-- When approved, **snapshot data as JSON** — never recalculate from live data
+### Frontend (Next.js)
+1. **ALWAYS** start with `"use client";` for interactive pages
+2. **ALWAYS** import `fetchClient` from `@/lib/api-client` — NOT raw `fetch()`
+3. **ALWAYS** use `useLanguage()` for text — `const { t } = useLanguage();`
+4. **ALWAYS** use `useAuth()` for user info — `const { user } = useAuth();`
+5. **Status badges** follow this pattern: `Record<string, { bg, text, label }>`
 
-## 3. Table UI Standards
+### Mobile (React Native)
+1. **ALWAYS** use `useApi()` hook — NOT raw `fetch()`
+2. **ALWAYS** pass `cacheKey` for GET requests (offline support)
+3. **ALWAYS** use `useIsFocused()` to refetch on screen focus
+4. **ALWAYS** add `RefreshControl` to ScrollView/FlatList
+5. **ALWAYS** use `StyleSheet.create()` — NOT inline styles
+6. **ALWAYS** use `useLanguage()` for text — `const { t } = useLanguage();`
 
-All data tables MUST follow this consistent aesthetic:
+## 🧩 Common Imports Cheatsheet
 
-```tsx
-// Header style
-"text-xs font-bold text-slate-500 uppercase tracking-wider"
-
-// Row hover
-"hover:bg-slate-50/80 transition-colors"
-
-// CTA Buttons
-"bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2"
-
-// Status badges
-"px-3 py-1 rounded-full text-xs font-semibold"
-// Green: bg-emerald-100 text-emerald-700
-// Yellow: bg-amber-100 text-amber-700  
-// Red: bg-red-100 text-red-700
-// Blue: bg-blue-100 text-blue-700
-```
-
-## 4. API Architecture
-
-### Pattern: Hierarchy-Aware Endpoints
+### Backend
 ```python
-# Branch-level (filtered by user's branch)
-GET /api/v1/{module}/?branch_id=xxx
-
-# Corporate-level (aggregate all branches)
-GET /api/v1/{module}/corporate/summary
+# Auth
+from app.api.deps import get_current_active_user
+# Database
+from app.core.database import db
+# Config
+from app.core.config import settings
+# Logger
+import logging
+logger = logging.getLogger(__name__)
 ```
 
-### Key Rules
-- All endpoints return `{"success": true/false, "data": ..., "message": ...}`
-- Use structured `logger.exception()`, never `print()` or `traceback.print_exc()`
-- Error responses must NEVER leak database details or stack traces
-- JWT tokens expire in 24 hours (not 8 days!)
-
-## 5. Security Checklist
-
-Before any deployment:
-- [ ] `SECRET_KEY` loaded from environment variable, not hardcoded
-- [ ] CORS restricted to specific domains (no `["*"]`)
-- [ ] JWT expiry ≤ 24 hours
-- [ ] No `sys.stderr.write` or `traceback.print_exc()` in production code
-- [ ] AD/LDAP integration: always fall back to local auth on connection failure
-- [ ] Sensitive fields (password hashes, tokens) never returned in API responses
-
-## 6. Mobile-First Field Operations
-
-### Offline Queue Pattern
+### Frontend
 ```tsx
-// Always queue if offline, sync when back online
-const { execute } = useApi();
-await execute('/api/v1/safety-walk/results', {
-  method: 'POST',
-  body: data,
-  offlineQueue: true, // Queue for later sync
-});
+import { fetchClient } from '@/lib/api-client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
 ```
 
-### GPS/Media Storage
-- GPS coordinates stored as JSON: `{"lat": 21.028, "lng": 105.854}`
-- Photos stored as base64 in JSON field (max 3 images per record)
-- Always compress images before upload (max 500KB each)
-
-## 7. Report Builder Pattern
-
-For complex configurable reports (Company Reports):
-- Use **block-based architecture** with `@dnd-kit` for drag-and-drop
-- Each block type: `table`, `chart`, `text`, `metric-card`
-- Blocks stored as JSON array in database
-- Render engine reads blocks and renders appropriate component
-- Support both edit mode (drag/resize) and view mode (read-only)
-
-## 8. Notification System
-
-### notify.py Service Pattern
-```python
-from app.services.notify import send_notification
-
-send_notification(
-    title="New Safety Walk needs approval",
-    content=f"Plan for {location} submitted by {user.name}",
-    notification_type="safety_walk",
-    target_branch_id=branch_id,
-    target_role="manager",  # or target_user_id for specific user
-    reference_id=record_id,
-    reference_type="safety_walk",
-)
+### Mobile
+```tsx
+import { useApi } from '../hooks/useApi';
+import { useLanguage } from '../context/LanguageContext';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator, RefreshControl } from 'react-native';
 ```
-
-### Rules
-- Always include `reference_id` + `reference_type` for deep linking
-- Approval notifications → target role (managers)
-- Result notifications → target specific user (creator)
-- Large content (base64 screenshots) → use Telegram document fallback
-
-## 9. Module Toggle System
-
-Enterprise features are controlled by toggle configuration:
-```json
-{
-  "moc": true,
-  "eptw": true,
-  "safety_walk": true,
-  "risk_assessment": false,
-  "compliance_audit": true
-}
-```
-
-- Toggles stored in `SystemConfig` table
-- Sidebar dynamically filters based on active modules
-- API endpoints check toggle before processing requests
-- Mobile app respects toggles for screen visibility
-
-## 10. Common Bugs & Gotchas
-
-| Issue | Root Cause | Fix |
-|-------|-----------|-----|
-| Archive tab shows empty | Query only fetches `archived`, not `completed` | Fetch both: `status IN ('archived', 'completed')` |
-| 404 on branch data | Old API path without version prefix | Use `/api/v1/branches` |
-| Select shows raw values | No translation for dropdown options | Add `t()` for select options |
-| Build fails on `[id]` page | TypeScript strict mode + async params | Use `React.use()` for params in Next.js 15 |
-| Notification not clickable | Missing click handler on list item | Add `onClick` + cursor-pointer |
-| SPI not updating | Recalculation trigger missing | Call `recalculate_spi()` after CRUD operations |

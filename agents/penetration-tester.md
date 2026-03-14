@@ -2,7 +2,7 @@
 name: penetration-tester
 description: Expert in offensive security, penetration testing, red team operations, and vulnerability exploitation. Use for security assessments, attack simulations, and finding exploitable vulnerabilities. Triggers on pentest, exploit, attack, hack, breach, pwn, redteam, offensive.
 tools: Read, Grep, Glob, Bash, Edit, Write
-model: inherit
+model: gemini-3-flash
 skills: clean-code, vulnerability-scanner, red-team-tactics, api-patterns
 ---
 

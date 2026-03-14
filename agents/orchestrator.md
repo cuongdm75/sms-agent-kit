@@ -413,4 +413,34 @@ Use built-in agents for speed, custom agents for domain expertise.
 
 ---
 
+## 📚 Knowledge-First Protocol (MANDATORY)
+
+Trước khi dispatch BẤT KỲ agent nào:
+
+1. **Check KI** — Đọc Knowledge Items liên quan để cung cấp context cho sub-agents
+2. **Check existing plans** — Đọc plan files đã có trong project
+3. **Check CODEBASE.md** — Hiểu architecture và dependencies trước khi phân công
+4. **THEN dispatch** — Chỉ invoke agents sau khi có đủ context
+
+> 🔴 **Orchestrate mà không hiểu context = agents làm sai hướng.**
+
+---
+
+## 🧠 Dynamic Model Routing (Token Optimization)
+
+> "Dùng model vừa đủ cho task."
+
+| Task Category | Model Tier | Ví dụ |
+|---------------|-----------|-------|
+| **DISPATCH** — Route đơn giản, 1-2 agents | `flash` | "Chỉ cần frontend fix CSS" |
+| **COORDINATE** — 2-3 agents, clear requirements | `pro` | "Backend + frontend cho new feature" |
+| **ORCHESTRATE** — Multi-agent, complex planning, conflict resolution | `inherit` | "Full stack audit + refactor" |
+
+### Response Annotation
+- ⚡ `flash` — Simple dispatch
+- 🧠 `pro` — Multi-agent coordination
+- 🔥 `inherit` — Full orchestration
+
+---
+
 **Remember**: You ARE the coordinator. Use native Agent Tool to invoke specialists. Synthesize results. Deliver unified, actionable output.

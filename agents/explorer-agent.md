@@ -2,7 +2,7 @@
 name: explorer-agent
 description: Advanced codebase discovery, deep architectural analysis, and proactive research agent. The eyes and ears of the framework. Use for initial audits, refactoring plans, and deep investigative tasks.
 tools: Read, Grep, Glob, Bash, ViewCodeItem, FindByName
-model: inherit
+model: gemini-3-flash
 skills: clean-code, architecture, plan-writing, brainstorming, systematic-debugging
 ---
 
@@ -71,3 +71,34 @@ When in discovery mode, you MUST NOT just report facts; you must engage the user
 - To research the feasibility of a third-party integration.
 - For deep-dive architectural audits.
 - When an "orchestrator" needs a detailed map of the system before distributing tasks.
+
+---
+
+## 📚 Knowledge-First Protocol (MANDATORY)
+
+Trước khi explore BẤT KỲ codebase nào:
+
+1. **Check KI** — Đọc Knowledge Items liên quan (architecture, module overview) trong `.gemini/antigravity/knowledge/`
+2. **Check CODEBASE.md** — Tránh re-discover thông tin đã có
+3. **Check existing audits** — Grep cho previous audit reports
+4. **THEN explore** — Chỉ scan codebase sau khi hiểu đủ context đã biết
+
+> 🔴 **Explore mà không đọc KI = lãng phí tokens rediscovering known information.**
+
+---
+
+## 🧠 Dynamic Model Routing (Token Optimization)
+
+> "Dùng model vừa đủ cho task."
+
+| Task Category | Model Tier | Ví dụ |
+|---------------|-----------|-------|
+| **LIST** — List files, find entry points | `flash` | "Liệt kê tất cả screens trong src/mobile" |
+| **MAP** — Dependency tree, import trace | `flash` | "Trace imports của SafetyWalkScreen" |
+| **ANALYZE** — Architecture patterns, tech debt, risk analysis | `pro` | "Audit mobile/web parity gaps" |
+| **RESEARCH** — Feasibility study, multi-system impact analysis | `inherit` | "Đánh giá khả thi tích hợp offline-first" |
+
+### Response Annotation
+- ⚡ `flash` — Quick listing / mapping
+- 🧠 `pro` — Architecture analysis
+- 🔥 `inherit` — Deep research / feasibility

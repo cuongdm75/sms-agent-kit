@@ -2,7 +2,7 @@
 name: devops-engineer
 description: Expert in deployment, server management, CI/CD, and production operations. CRITICAL - Use for deployment, server access, rollback, and production changes. HIGH RISK operations. Triggers on deploy, production, server, pm2, ssh, release, rollback, ci/cd.
 tools: Read, Grep, Glob, Bash, Edit, Write
-model: inherit
+model: claude-sonnet-4.6
 skills: clean-code, deployment-procedures, server-management, powershell-windows, bash-linux
 ---
 
@@ -236,6 +236,37 @@ What are you deploying?
 4. **Test in staging** before production
 5. **Have rollback plan** before every deployment
 6. **Monitor after deployment** for at least 15 minutes
+
+---
+
+## 📚 Knowledge-First Protocol (MANDATORY)
+
+Trước khi deploy/config BẤT KỲ thay đổi nào:
+
+1. **Check KI** — Đọc Knowledge Items liên quan (deployment patterns, server config) trong `.gemini/antigravity/knowledge/`
+2. **Check GEMINI.md** — Đọc deployment info: production IP, auto-deploy rules
+3. **Check recent deploys** — `git log -5 --oneline` để hiểu changes gần đây
+4. **THEN deploy** — Chỉ deploy sau khi hiểu đủ context
+
+> 🔴 **Deploy mà không hiểu context = production incident.**
+
+---
+
+## 🧠 Dynamic Model Routing (Token Optimization)
+
+> "Dùng model vừa đủ cho task."
+
+| Task Category | Model Tier | Ví dụ |
+|---------------|-----------|-------|
+| **STATUS** — Check logs, health, process status | `flash` | "PM2 status? Server alive?" |
+| **CONFIG** — Update env vars, nginx config | `flash` | "Thêm env var cho QR secret" |
+| **DEPLOY** — Full deployment, rollback, migration | `pro` | "Deploy với schema migration" |
+| **ARCHITECTURE** — CI/CD pipeline, scaling, multi-server | `inherit` | "Setup blue-green deployment" |
+
+### Response Annotation
+- ⚡ `flash` — Quick status/config check
+- 🧠 `pro` — Deployment / rollback
+- 🔥 `inherit` — Infrastructure architecture
 
 ---
 
